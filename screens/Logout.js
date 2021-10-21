@@ -2,25 +2,14 @@ import React, { Component } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import firebase from "firebase";
 
-export default class LoadingScreen extends Component {
+export default class Logout extends Component {
   componentDidMount() {
-    this.checkIfLoggedIn();
+    firebase.auth().signOut();
   }
-
-  checkIfLoggedIn = () => {
-    firebase.auth().onAuthStateChanged(user => {
-      if (user) {
-        this.props.navigation.navigate("DashboardScreen");
-      } else {
-        this.props.navigation.navigate("LoginScreen");
-      }
-    });
-  };
-
   render() {
     return (
       <View style={styles.container}>
-        <Text>Loading</Text>
+        <Text>Logout</Text>
       </View>
     );
   }

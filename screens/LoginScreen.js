@@ -47,6 +47,7 @@ export default class LoginScreen extends Component {
           firebase.auth.GoogleAuthProvider.PROVIDER_ID &&
           providerData[i].uid === googleUser.getBasicProfile().getId()
         ) {
+          // We don't need to reauth the Firebase connection.
           return true;
         }
       }
@@ -55,14 +56,18 @@ export default class LoginScreen extends Component {
   };
 
   onSignIn = googleUser => {
+    // We need to register an Observer on Firebase Auth to make sure auth is initialized.
     var unsubscribe = firebase.auth().onAuthStateChanged(firebaseUser => {
       unsubscribe();
+      // Check if we are already signed-in Firebase with the correct user.
       if (!this.isUserEqual(googleUser, firebaseUser)) {
+        // Build Firebase credential with the Google ID token.
         var credential = firebase.auth.GoogleAuthProvider.credential(
           googleUser.idToken,
           googleUser.accessToken
         );
-        
+
+        // Sign in with credential from the Google user.
         firebase
           .auth()
           .signInWithCredential(credential)
@@ -136,10 +141,18 @@ export default class LoginScreen extends Component {
               style={styles.button}
               onPress={() => this.signInWithGoogleAsync()}
             >
+              <Image
+                source={require("../assets/google_icon.png")}
+                style={styles.googleIcon}
+              ></Image>
               <Text style={styles.googleText}>Sign in with Google</Text>
             </TouchableOpacity>
           </View>
           <View style={styles.cloudContainer}>
+            <Image
+              source={require("../assets/cloud.png")}
+              style={styles.cloudImage}
+            ></Image>
           </View>
         </View>
       );
